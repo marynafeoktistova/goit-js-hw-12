@@ -48,3 +48,27 @@
 .btn-search:focus {
   background-color: #6c8cff;
 }
+
+.btn {
+  /* display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row; */
+  gap: 10px;
+  border-radius: 8px;
+  padding: 8px 16px;
+  width: 125px;
+  height: 40px;
+  background: #4e75ff;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.5;
+  letter-spacing: 0.04em;
+  color: #fff;
+  border: none;
+  position: relative;
+  top: 60%;
+  left: 60%;
+  transform: translate(-170%, 50%);
+
+}

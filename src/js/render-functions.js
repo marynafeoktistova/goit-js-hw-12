@@ -6,12 +6,10 @@ import 'izitoast/dist/css/iziToast.min.css';
 const gallery = document.querySelector('.gallery');
 
 export function imagesTemplate(images) {
-  gallery.innerHTML = ''; 
   if (images.length === 0) {
     showMessage();
     return;
   }
-  
   const galleryMarkup = images.map(item => `
     <li class="gallery-item">
       <a class="gallery-link" href="${item.largeImageURL}">
@@ -40,7 +38,7 @@ export function imagesTemplate(images) {
     </li>
   `).join('');
 
-  gallery.innerHTML = galleryMarkup;
+  gallery.insertAdjacentHTML('beforeend', galleryMarkup); 
 
   const lightbox = new SimpleLightbox('.gallery a', {
     captionsData: 'alt',
@@ -49,7 +47,6 @@ export function imagesTemplate(images) {
   });
   lightbox.refresh();
 }
-
 
 export function showMessage() {
   iziToast.show({

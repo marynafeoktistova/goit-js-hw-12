@@ -23,7 +23,13 @@ async function onSubmit(evt) {
   evt.preventDefault();
 
   searchQuery = input.value.trim();
-  if (!searchQuery) return;
+  if (!searchQuery) {
+    iziToast.warning({
+      title: 'Warning',
+      message: 'Search query cannot be empty!',
+    });
+    return;
+  }
 
   page = 1; 
   input.value = '';
@@ -57,6 +63,7 @@ async function onSubmit(evt) {
   }
 }
 
+
 async function onLoadMore() {
   page += 1; 
 
@@ -85,7 +92,10 @@ async function onLoadMore() {
   }
 }
 function smoothScroll() {
-  const firstCard = document.querySelector('.gallery').firstElementChild;
+  const gallery = document.querySelector('.gallery');
+  if (!gallery || gallery.children.length === 0) return; 
+
+  const firstCard = gallery.firstElementChild;
   if (!firstCard) return;
 
   const cardHeight = firstCard.getBoundingClientRect().height;
@@ -94,3 +104,4 @@ function smoothScroll() {
     behavior: 'smooth',
   });
 }
+

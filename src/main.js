@@ -36,72 +36,103 @@ async function onSubmit(evt) {
   gallery.innerHTML = ''; 
   Gallerybtn.style.display = 'none'; 
 
-  loader.style.display = 'block';
+  showLoader();
+
+  iziToast.info({
+    message: 'Loading images, please wait...',
+    timeout: 1000,
+    position: 'center',
+  });
 
   try {
     const data = await fetchImg(searchQuery, page, perPage);
-    loader.style.display = 'none';
 
-    totalHits = data.data.totalHits; 
+    setTimeout(() => {
+      hideLoader();
+      totalHits = data.data.totalHits;
 
-    if (data.data.hits.length === 0) {
-      showMessage();
-    } else {
-      imagesTemplate(data.data.hits); 
+      if (data.data.hits.length === 0) {
+        showMessage();
+      } else {
+        imagesTemplate(data.data.hits);
 
-      if (page * perPage < totalHits) {
-        Gallerybtn.style.display = 'block'; 
+       
+        if (perPage >= totalHits) {
+          iziToast.info({
+            message: 'You have reached the end of the search results.',
+            position: 'topRight',
+            timeout: 3000,
+          });
+        } else {
+          Gallerybtn.style.display = 'block'; 
+        }
       }
-    }
+    }, 1000); 
   } catch (err) {
-    loader.style.display = 'none';
+    hideLoader();
     iziToast.error({
       title: 'Error',
-      message: 'Oops... !',
+      message: 'Oops... Something went wrong!',
     });
     console.error('Error:', err);
   }
 }
-
 
 async function onLoadMore() {
   page += 1; 
-
-  loader.style.display = 'block';
+  showLoader();
 
   try {
     const data = await fetchImg(searchQuery, page, perPage);
-    loader.style.display = 'none';
 
-    imagesTemplate(data.data.hits); 
-    smoothScroll();
+    setTimeout(() => {
+      hideLoader();
+      imagesTemplate(data.data.hits); 
+      smoothScroll();
 
-    if (page * perPage >= totalHits) {
-      Gallerybtn.style.display = 'none';
-      iziToast.info({
-        message: 'We are sorry, but you have reached the end of search results.',
-      });
-    }
+    
+      const loadedImages = page * perPage;
+
+      if (loadedImages >= totalHits) {
+        Gallerybtn.style.display = 'none';
+
+        iziToast.info({
+          title: 'Info',
+          message: 'You have reached the end of the search results.',
+          position: 'topRight',
+          timeout: 3000,
+        });
+      }
+    }, 1000); 
   } catch (err) {
-    loader.style.display = 'none';
+    hideLoader();
     iziToast.error({
       title: 'Error',
-      message: 'Oops... !',
+      message: 'Oops... Something went wrong!',
     });
     console.error('Error:', err);
   }
 }
+
 function smoothScroll() {
   const gallery = document.querySelector('.gallery');
-  if (!gallery || gallery.children.length === 0) return; 
+  if (!gallery || gallery.children.length === 0) return;
 
   const firstCard = gallery.firstElementChild;
   if (!firstCard) return;
 
   const cardHeight = firstCard.getBoundingClientRect().height;
+
   window.scrollBy({
     top: cardHeight * 2, 
     behavior: 'smooth',
   });
 }
 
+function showLoader() {
+  loader.style.display = 'block';
+}
+
+function hideLoader() {
+  loader.style.display = 'none';
+}

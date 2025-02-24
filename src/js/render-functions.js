@@ -1,15 +1,24 @@
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
-import iziToast from 'izitoast';
+ import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
 
 const gallery = document.querySelector('.gallery');
 
+
+const lightbox = new SimpleLightbox('.gallery a', {
+  captionsData: 'alt',
+  captionPosition: 'bottom',
+  captionDelay: 250,
+});
+
 export function imagesTemplate(images) {
-  if (images.length === 0) {
+  if (!images || images.length === 0) {
     showMessage();
     return;
   }
+
+
   const galleryMarkup = images.map(item => `
     <li class="gallery-item">
       <a class="gallery-link" href="${item.largeImageURL}">
@@ -38,14 +47,11 @@ export function imagesTemplate(images) {
     </li>
   `).join('');
 
-  gallery.insertAdjacentHTML('beforeend', galleryMarkup); 
+   gallery.insertAdjacentHTML('beforeend', galleryMarkup);
 
-  const lightbox = new SimpleLightbox('.gallery a', {
-    captionsData: 'alt',
-    captionPosition: 'bottom',
-    captionDelay: 250,
-  });
-  lightbox.refresh();
+  setTimeout(() => {
+    lightbox.refresh(); 
+  }, 500); 
 }
 
 export function showMessage() {
